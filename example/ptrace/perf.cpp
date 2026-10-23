@@ -1,5 +1,6 @@
 #include "define.h"
 #include "perf.h"
+#include "faubtb_perf.h"
 
 uint64_t hpcounters[64];
 uint64_t maxevent=0, warmupinst=0, eventsel = 0, maxperiods = 0;
@@ -10,6 +11,10 @@ void event_sample_process(uint64_t sampletimes, uint64_t exitpc)
 {
     endcycle = read_csr_cycle();
     endinst = read_csr_instret();
+
+    //=====================================================
+    faubtb_dump(logfile, sampletimes, exitpc);
+    //=====================================================
 
     fprintf(logfile, "{\"type\": \"max_inst\", \"times\": %d, \"cycles\": %ld, \"inst\": %ld}\n", sampletimes, endcycle - startcycle, endinst - startinst);
     printf("{\"type\": \"max_inst\", \"times\": %d, \"cycles\": %ld, \"inst\": %ld}\n", sampletimes, endcycle - startcycle, endinst - startinst);
