@@ -297,6 +297,9 @@ class FetchTargetQueue(implicit p: Parameters) extends BoomModule
     io.bpdupdate.bits.ghist      := bpd_ghist
     io.bpdupdate.bits.lhist      := bpd_lhist
     io.bpdupdate.bits.meta       := bpd_meta
+    //--------------------------------------------------------------------------
+    io.bpdupdate.bits.cfi_is_jalr := bpd_entry.cfi_type === CFI_JALR
+    //---------------------------------------------------------------------------
 
     first_empty := false.B
   }

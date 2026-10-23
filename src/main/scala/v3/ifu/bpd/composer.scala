@@ -17,6 +17,13 @@ class ComposedBranchPredictorBank(implicit p: Parameters) extends BranchPredicto
   val (components, resp) = getBPDComponents(io.resp_in(0), p)
   io.resp := resp
 
+//===================================================================
+    for (i <- 0 until FAuBTBPerfEvents.Count) {
+    io.faubtb_events(i) :=
+      components.map(_.io.faubtb_events(i))
+        .foldLeft(0.U(FAuBTBPerfEvents.Width.W))(_ +& _)
+  }
+//===================================================================
 
   var metas = 0.U(1.W)
   var meta_sz = 0

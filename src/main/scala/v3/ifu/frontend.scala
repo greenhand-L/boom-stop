@@ -285,7 +285,9 @@ class BoomFrontendIO(implicit p: Parameters) extends BoomBundle
   val flush_icache = Output(Bool())
 
   val perf = Input(new FrontendPerfEvents)
-
+  //===============================================================
+  val faubtb_events = Input(Vec(FAuBTBPerfEvents.Count, UInt(FAuBTBPerfEvents.Width.W)))
+  //===============================================================
   ////Enable_PerfCounter_Support: for icache and information
   val itlb_valid_access = Input(Bool())
   val itlb_hit = Input(Bool())
@@ -336,6 +338,9 @@ class BoomFrontendModule(outer: BoomFrontend) extends LazyModuleImp(outer)
 
   val bpd = Module(new BranchPredictor)
   bpd.io.f3_fire := false.B
+  //==============================================================
+  io.cpu.faubtb_events := bpd.io.faubtb_events
+  //=============================================================
   val ras = Module(new BoomRAS)
 
   val icache = outer.icache.module

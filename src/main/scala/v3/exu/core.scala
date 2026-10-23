@@ -456,6 +456,12 @@ class BoomCore()(implicit p: Parameters) extends BoomModule
     event_counters.io.event_signals(6) :=  Mux(io.ifu.itlb_hit, 1.U, 0.U) //itlb hit number
     event_counters.io.event_signals(7) :=  Mux(io.ifu.perf.tlbMiss, 1.U, 0.U) //i-tlb start ptw
     // TODO
+    //===============================================================
+          for (i <- 0 until FAuBTBPerfEvents.Count) {
+      event_counters.io.event_signals(FAuBTBPerfEvents.Base + i) :=
+        io.ifu.faubtb_events(i)
+    }
+    //===============================================================
   }
 
   //-------------------------------------------------------------

@@ -437,7 +437,7 @@ class WithNCS152DefaultBooms(n: Int = 1) extends Config(
 class WithTAGELBPD extends Config((site, here, up) => {
   case TilesLocated(InSubsystem) => up(TilesLocated(InSubsystem), site) map {
     case tp: BoomTileAttachParams => tp.copy(tileParams = tp.tileParams.copy(core = tp.tileParams.core.copy(
-      bpdMaxMetaLength = 120,
+      bpdMaxMetaLength = 512,
       globalHistoryLength = 64,
       localHistoryLength = 1,
       localHistoryNSets = 0,

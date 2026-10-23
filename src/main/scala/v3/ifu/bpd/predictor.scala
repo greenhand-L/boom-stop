@@ -154,8 +154,19 @@ abstract class BranchPredictorBank(implicit p: Parameters) extends BoomModule()(
     val f3_fire = Input(Bool())
 
     val update = Input(Valid(new BranchPredictionBankUpdate))
+  
+    //===============================================================
+      val faubtb_events = Output(Vec(FAuBTBPerfEvents.Count, UInt(FAuBTBPerfEvents.Width.W)))
+    //===============================================================
   })
   io.resp := io.resp_in(0)
+
+    //===============================================================
+        io.faubtb_events :=
+    VecInit(Seq.fill(FAuBTBPerfEvents.Count)(
+      0.U(FAuBTBPerfEvents.Width.W)
+    ))
+    //===============================================================
 
   io.f3_meta := 0.U
 
@@ -209,6 +220,11 @@ class BranchPredictor(implicit p: Parameters) extends BoomModule()(p)
 
     // Update
     val update = Input(Valid(new BranchPredictionUpdate))
+
+    //===============================================================
+    val faubtb_events =
+      Output(Vec(FAuBTBPerfEvents.Count, UInt(FAuBTBPerfEvents.Width.W)))
+    //===============================================================
   })
 
   var total_memsize = 0
@@ -222,6 +238,13 @@ class BranchPredictor(implicit p: Parameters) extends BoomModule()(p)
     }
     m
   })
+    require(fetchWidth < (1 << FAuBTBPerfEvents.Width),
+    "FAuBTB event increment width is too small")
+
+  for (i <- 0 until FAuBTBPerfEvents.Count) {
+    io.faubtb_events(i) :=
+      banked_predictors.map(_.io.faubtb_events(i)).reduce(_ +& _)
+  }
   bpdStr.append(BoomCoreStringPrefix(f"Total bpd size: ${total_memsize / 1024} KB\n"))
   override def toString: String = bpdStr.toString
 
